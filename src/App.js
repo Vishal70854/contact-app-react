@@ -5,6 +5,7 @@ import './App.css';
 import Header from './components/Header';
 import AddContact from './components/AddContact';
 import ContactList from './components/ContactList'; 
+import ContactDetail from './components/ContactDetail'; 
 
 function App() {
   const LOCAL_STORAGE_KEY = "contacts";
@@ -61,6 +62,10 @@ function App() {
                 getContactId={removeContactHandler} 
               />
             } 
+          />
+          <Route 
+            path="/contact/:id" 
+            element={<ContactDetail />} 
           />
         </Routes>
       </Router>
