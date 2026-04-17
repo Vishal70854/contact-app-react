@@ -20,9 +20,9 @@ const ContactList = (props) => {
 
     return (
         <div className="ui container" style={{ marginTop: "80px" }}>
-        <h2>Contact List
+        <h2 style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>Contact List
             <Link to="/add">
-                <button className="ui button blue right">Add Contact</button>
+                <button className="ui button blue right" style={{flex: "1"}}>Add Contact</button>
             </Link>
         </h2>
         <div className="ui search">
