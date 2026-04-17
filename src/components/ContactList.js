@@ -1,7 +1,9 @@
-import React from "react";
+import React , {useRef} from "react";
 import { Link } from "react-router-dom";
 import ContactCard from "./ContactCard";
 const ContactList = (props) => {
+    // console.log(props);
+    const inputEl = useRef("");
 
     const deleteContactHandler = (id) => {
         props.getContactId(id); // pass this id to getContactId(id) in App.js(App.js is parent compenent here) which is removeContactHandler(id) in App.js (i.e passing data from subchild->child->parent)
@@ -12,14 +14,31 @@ const ContactList = (props) => {
         );
     })
 
+    const getSearchTerm = () => {
+        props.searchKeyword(inputEl.current.value);
+    }
+
     return (
         <div className="ui container" style={{ marginTop: "80px" }}>
-        <h2>Contact List</h2>
-        <Link to="/add">
-            <button className="ui button blue right">Add Contact</button>
-        </Link>
-        
-        <div className="ui celled list"> {renderContactList} </div>
+        <h2>Contact List
+            <Link to="/add">
+                <button className="ui button blue right">Add Contact</button>
+            </Link>
+        </h2>
+        <div className="ui search">
+            <div className="ui icon input">
+                <input 
+                    ref={inputEl}
+                    type="text" 
+                    placeholder="Search Contacts" 
+                    className="prompt"
+                    value={props.term}
+                    onChange={getSearchTerm}
+                    />
+                <i className="search icon" />
+            </div>
+        </div>
+        <div className="ui celled list"> {renderContactList.length > 0 ? renderContactList : "No Contacts Available !!"} </div>
         </div>
     );
 }

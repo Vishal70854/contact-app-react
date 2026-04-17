@@ -13,7 +13,8 @@ import EditContact from './components/EditContact';
 function App() {
   const LOCAL_STORAGE_KEY = "contacts";
   const [contacts, setContacts] = useState([]);
-
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
 
   // retrieve Contacts
   const retrieveContacts = async () => {
@@ -53,6 +54,26 @@ function App() {
     //update the contacts state
     setContacts(newContactList);
   }
+
+  // search handler for searching contacts
+  const searchHandler = (searchTerm) => {
+    setSearchTerm(searchTerm);  // update the searchTerm state based on the input got from ContactList to App.js
+    if(searchTerm !== ""){
+      const newContactList = contacts.filter((contact)=>{
+        return Object
+              .values(contact)
+              .join(" ")
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase());  // get only values of contact object (here key is not returned) as a string
+      })
+      setSearchResults(newContactList); // update the searchResult state with newContactList
+
+    }
+    else{ // if searchTerm is empty or ""
+      setSearchResults(contacts);
+    }
+  }
+
 
   // retrieve contacts data from localstorage
   useEffect(() => {
@@ -97,8 +118,10 @@ function App() {
             path="/" 
             element={
               <ContactList 
-                contacts={contacts} 
+                contacts={searchTerm.length < 1 ? contacts : searchResults} 
                 getContactId={removeContactHandler} 
+                term = {searchTerm}
+                searchKeyword = {searchHandler}
               />
             } 
           />
