@@ -6,11 +6,20 @@ import Header from './components/Header';
 import AddContact from './components/AddContact';
 import ContactList from './components/ContactList'; 
 import ContactDetail from './components/ContactDetail'; 
+import api from './api/contacts';
+import { all } from 'axios';
 
 function App() {
   const LOCAL_STORAGE_KEY = "contacts";
   const [contacts, setContacts] = useState([]);
 
+
+  // retrieve Contacts
+  const retrieveContacts = async () => {
+    const response =  await api.get("/contacts");
+    return response.data;
+  }
+ 
   const addContactHandler = (contact) => {
     console.log(contact);
       const newContact = {
@@ -31,10 +40,20 @@ function App() {
 
   // retrieve contacts data from localstorage
   useEffect(() => {
-    const retrieveContacts = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)); // retrieve contacts details in localstorage
-    if(retrieveContacts){
-      setContacts(retrieveContacts);  // if data is there then update the contacts using setContacts(retrieveContacts)
+    // const retrieveContacts = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)); // retrieve contacts details in localstorage
+    // if(retrieveContacts){
+    //   setContacts(retrieveContacts);  // if data is there then update the contacts using setContacts(retrieveContacts)
+    // }
+
+    // get contacts from json-server fake api using axios, async, await
+    const getAllContacts = async () => {
+      const allContacts = await retrieveContacts(); // call the retrieve contacts method for fetching contacts array
+      if(allContacts)
+        setContacts(allContacts); // save contacts state using useState(allContacts) if contacts data is fetched from api json-server
     }
+
+    // call getAllContacts() function
+    getAllContacts();
   }, []); // useEffect dependency array [] consists of empty array, that means app renders only once
 
 
