@@ -8,6 +8,7 @@ import ContactList from './components/ContactList';
 import ContactDetail from './components/ContactDetail'; 
 import api from './api/contacts';
 import { all } from 'axios';
+import EditContact from './components/EditContact';
 
 function App() {
   const LOCAL_STORAGE_KEY = "contacts";
@@ -16,21 +17,36 @@ function App() {
 
   // retrieve Contacts
   const retrieveContacts = async () => {
-    const response =  await api.get("/contacts");
+    const response =  await api.get("/contacts"); // get call to fetch contacts array from json-server fake api
     return response.data;
   }
  
-  const addContactHandler = (contact) => {
+  const addContactHandler = async (contact) => {
     console.log(contact);
-      const newContact = {
+
+      const request = {
       id: uuidv4(),
       ...contact
     };
-    setContacts([...contacts, newContact]); // add new contact object to the previous contacts array
+    // post api call to add a new contact to the json-server fake api and pass the request as input to the fake api
+    const response = await api.post("/contacts", request);
+    setContacts([...contacts, response.data]); // add new contact object to the previous contacts array
+  }
+
+  // update contact function
+  const updateContactHandler = async (contact) => {
+    const response = await api.put(`/contacts/${contact.id}`, contact); // update contact by passing updated contacts data 
+    const {id, name, email} = response.data;
+    setContacts(
+      contacts.map((contact) => {
+        return contact.id === id ? {...response.data} : contact;
+      })
+    );
   }
 
   // delete contact function
-  const removeContactHandler = (id) => {
+  const removeContactHandler = async (id) => {
+    await api.delete(`/contacts/${id}`);  // delete contact with id from fake-api
     const newContactList = contacts.filter((contact) => {
       return contact.id !== id;
     });
@@ -72,6 +88,10 @@ function App() {
           <Route 
             path="/add" 
             element={<AddContact addContactHandler={addContactHandler} />} 
+          />
+          <Route 
+            path="/edit" 
+            element={<EditContact updateContactHandler={updateContactHandler} />} 
           />
           <Route 
             path="/" 
